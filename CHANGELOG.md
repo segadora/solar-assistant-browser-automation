@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.1...v1.1.2) (2024-11-01)
+
+
+### Miscellaneous
+
+* revert add build tags ([a39956d](https://github.com/segadora/solar-assistant-browser-automation/commit/a39956d36829a79a7c3005ed18e9480919736b31))
+
 ## [1.1.1](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.0...v1.1.1) (2024-11-01)
 
 
