@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.1](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.0...v1.1.1) (2024-11-01)
+
+
+### Bug Fixes
+
+* fix build fails ([f1938d6](https://github.com/segadora/solar-assistant-browser-automation/commit/f1938d609cb5103c3bd0f27d3fd3490b61113ae4))
+
+
+### Miscellaneous
+
+* add build tags ([26fb61f](https://github.com/segadora/solar-assistant-browser-automation/commit/26fb61fa9c9b2a1a1d654ea0731b5a355c7d66b4))
+
 ## [1.1.0](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.0.0...v1.1.0) (2024-11-01)
 
 
