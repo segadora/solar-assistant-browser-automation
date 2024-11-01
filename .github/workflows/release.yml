@@ -73,9 +73,11 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
+          provenance: false
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest, ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.release-please.outputs.tag }}
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
