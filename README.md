@@ -21,7 +21,7 @@ http://localhost:8080/work-mode-schedule?schedule1[from]=02&schedule1[to]=03&sch
 ```
 services:
   solar-assistant-browser-automation:
-    image: ghcr.io/segadora/solar-assistant-browser-automation:latest
+    image: ghcr.io/segadora/solar-assistant-browser-automation:master
     container_name: "solar-assistant-browser-automation"
     restart: on-failure
     environment:
