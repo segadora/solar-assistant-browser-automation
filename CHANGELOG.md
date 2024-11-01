@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.8](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.7...v1.1.8) (2024-11-01)
+
+
+### Miscellaneous
+
+* fix invalid tag in readme ([233e204](https://github.com/segadora/solar-assistant-browser-automation/commit/233e204f1c406d711df5fe327380e5b380e2089d))
+
 ## [1.1.7](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.6...v1.1.7) (2024-11-01)
 
 
