@@ -104,25 +104,20 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 		return
 	}
 
-	log.Printf("go to power page at (%s)", solarAssistant.url+"/power")
-
 	path, _ := launcher.LookPath()
 
 	log.Printf("browser path: %s", path)
 
 	u := launcher.New().Bin(path).MustLaunch()
-	log.Println("a")
 	browser := rod.New().ControlURL(u).MustConnect()
-	log.Println("b")
-
 	defer browser.MustClose()
 	log.Println("c")
 
-	page := browser.MustPage(solarAssistant.url + "/power")
+	log.Printf("go to power page at (%s)", solarAssistant.url+"/power")
+
+	page := browser.MustPage(solarAssistant.url + "/power").MustWaitStable()
 
 	log.Println("d")
-
-	page.MustWaitStable()
 
 	if page.MustElement(".heading").MustText() == "Sign in" {
 		log.Println("inputting login")
