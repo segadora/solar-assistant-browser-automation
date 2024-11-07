@@ -103,7 +103,7 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 		return
 	}
 
-	log.Println("go to power page")
+	log.Printf("go to power page at (%s)", solarAssistant.url+"/power")
 
 	browser := rod.New().MustConnect()
 
