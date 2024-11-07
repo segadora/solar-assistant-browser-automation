@@ -113,8 +113,6 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 	defer browser.MustClose()
 
 	page := browser.MustPage(solarAssistant.url + "/power")
-
-	page.MustScreenshot("test.png")
 	page.MustWaitStable()
 
 	if page.MustElement(".heading").MustText() == "Sign in" {
