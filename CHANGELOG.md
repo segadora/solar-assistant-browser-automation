@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.8](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.7...v1.1.8) (2024-11-07)
+
+
+### Bug Fixes
+
+* unable to boot image due to missing user ([b7ed3d9](https://github.com/segadora/solar-assistant-browser-automation/commit/b7ed3d9de2faa5af4cd651585e70f63cfed6d141))
+
+
+### Miscellaneous
+
+* fix invalid tag in readme ([233e204](https://github.com/segadora/solar-assistant-browser-automation/commit/233e204f1c406d711df5fe327380e5b380e2089d))
+
 ## [1.1.7](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.6...v1.1.7) (2024-11-01)
 
 
