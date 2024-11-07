@@ -16,10 +16,12 @@ import (
 )
 
 type SolarAssistant struct {
-	url   string
-	user  string
-	pass  string
-	debug bool
+	url     string
+	user    string
+	pass    string
+	debug   bool
+	browser *rod.Browser
+	page    *rod.Page
 }
 
 func main() {
@@ -27,11 +29,21 @@ func main() {
 		log.Printf("unable to load .env file: %s", err)
 	}
 
+	path, _ := launcher.LookPath()
+
+	log.Printf("browser path: %s", path)
+
+	u := launcher.New().Bin(path).MustLaunch()
+	browser := rod.New().ControlURL(u).MustConnect()
+	defer browser.MustClose()
+
 	solarAssistant := &SolarAssistant{
-		url:   os.Getenv("SOLAR_ASSISTANT_URL"),
-		user:  os.Getenv("SOLAR_ASSISTANT_USER"),
-		pass:  os.Getenv("SOLAR_ASSISTANT_PASS"),
-		debug: os.Getenv("SOLAR_ASSISTANT_DEBUG") == "1",
+		url:     os.Getenv("SOLAR_ASSISTANT_URL"),
+		user:    os.Getenv("SOLAR_ASSISTANT_USER"),
+		pass:    os.Getenv("SOLAR_ASSISTANT_PASS"),
+		debug:   os.Getenv("SOLAR_ASSISTANT_DEBUG") == "1",
+		browser: browser,
+		page:    nil,
 	}
 
 	r := gin.New()
@@ -104,21 +116,15 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 		return
 	}
 
-	path, _ := launcher.LookPath()
-
-	log.Printf("browser path: %s", path)
-
-	u := launcher.New().Bin(path).MustLaunch()
-	browser := rod.New().ControlURL(u).MustConnect()
-	defer browser.MustClose()
-	log.Println("c")
-
 	log.Printf("go to power page at (%s)", solarAssistant.url+"/power")
 
-	page := browser.MustPage(solarAssistant.url + "/power").MustWaitStable()
+	if solarAssistant.page == nil {
+		solarAssistant.page = solarAssistant.browser.MustPage(solarAssistant.url + "/power").MustWaitStable()
+	} else {
+		solarAssistant.page = solarAssistant.page.MustNavigate(solarAssistant.url + "/power").MustWaitStable()
+	}
 
-	log.Println("d")
-
+	page := solarAssistant.page
 	if page.MustElement(".heading").MustText() == "Sign in" {
 		log.Println("inputting login")
 
