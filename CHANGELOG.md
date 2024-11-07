@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.10...v1.2.0) (2024-11-07)
+
+
+### Features
+
+* add home assistant repository ([0f4f694](https://github.com/segadora/solar-assistant-browser-automation/commit/0f4f694f7633e8b981e68e288d7412773429f050))
+
 ## [1.1.10](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.9...v1.1.10) (2024-11-07)
 
 
