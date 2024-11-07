@@ -268,34 +268,24 @@ func timeInput(time string) []input.Key {
 		switch string(char) {
 		case "0":
 			keys = append(keys, input.Digit0)
-			break
 		case "1":
 			keys = append(keys, input.Digit1)
-			break
 		case "2":
 			keys = append(keys, input.Digit2)
-			break
 		case "3":
 			keys = append(keys, input.Digit3)
-			break
 		case "4":
 			keys = append(keys, input.Digit4)
-			break
 		case "5":
 			keys = append(keys, input.Digit5)
-			break
 		case "6":
 			keys = append(keys, input.Digit6)
-			break
 		case "7":
 			keys = append(keys, input.Digit7)
-			break
 		case "8":
 			keys = append(keys, input.Digit8)
-			break
 		case "9":
 			keys = append(keys, input.Digit9)
-			break
 		}
 	}
 
