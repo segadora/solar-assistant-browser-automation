@@ -25,6 +25,5 @@ RUN apk add chromium
 
 WORKDIR /
 COPY --from=builder /usr/bin/solar-assistant-browser-automation /
-USER nonroot:nonroot
 
 CMD ["/solar-assistant-browser-automation"]
