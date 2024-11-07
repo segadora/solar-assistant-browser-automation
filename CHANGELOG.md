@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.1](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.2.0...v1.2.1) (2024-11-07)
+
+
+### Bug Fixes
+
+* possible fix to browser download in hass ([d0f5178](https://github.com/segadora/solar-assistant-browser-automation/commit/d0f5178033a2e5972d78d8f908da5727781424bc))
+
+
+### Miscellaneous
+
+* fix url should not contain slash in end ([870ee63](https://github.com/segadora/solar-assistant-browser-automation/commit/870ee639725049f24a1cc580d9e9d103a764c52f))
+
 ## [1.2.0](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.10...v1.2.0) (2024-11-07)
 
 
