@@ -20,7 +20,6 @@ type SolarAssistant struct {
 	user  string
 	pass  string
 	debug bool
-	page  *rod.Page
 }
 
 func main() {
@@ -33,7 +32,6 @@ func main() {
 		user:  os.Getenv("SOLAR_ASSISTANT_USER"),
 		pass:  os.Getenv("SOLAR_ASSISTANT_PASS"),
 		debug: os.Getenv("SOLAR_ASSISTANT_DEBUG") == "1",
-		page:  nil,
 	}
 
 	r := gin.New()
@@ -106,24 +104,18 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 		return
 	}
 
+	path, _ := launcher.LookPath()
+
+	log.Printf("browser path: %s", path)
+
+	u := launcher.New().Bin(path).MustLaunch()
+	browser := rod.New().ControlURL(u).MustConnect()
+	defer browser.MustClose()
+	log.Println("c")
+
 	log.Printf("go to power page at (%s)", solarAssistant.url+"/power")
 
-	if solarAssistant.page == nil {
-		path, _ := launcher.LookPath()
-
-		log.Printf("browser path: %s", path)
-
-		u := launcher.New().Bin(path).MustLaunch()
-		browser := rod.New().ControlURL(u).MustConnect()
-		defer browser.MustClose()
-		log.Println("c")
-
-		solarAssistant.page = browser.MustPage(solarAssistant.url + "/power").MustWaitStable()
-	} else {
-		solarAssistant.page.Navigate(solarAssistant.url + "/power")
-	}
-
-	page := solarAssistant.page
+	page := browser.MustPage(solarAssistant.url + "/power").MustWaitStable()
 
 	log.Println("d")
 
