@@ -1,0 +1,26 @@
+---
+name: "Solar Assistant Browser Automation Api"
+description: "Interacts with solar assistant"
+url: https://github.com/segadora/solar-assistant-browser-automation
+version: "1.0.0"
+slug: "solar_assistant_browser_automation_api"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+startup: services
+ports:
+  8080/tcp: 8080
+options:
+  url: "https://xxx.eu.solar-assistant.io"
+  user: ""
+  pass: ""
+schema:
+  url: str
+  user: str
+  pass: password
+watchdog: http://[HOST]:[PORT:8080]/
+webui: http://[HOST]:[PORT:8080]/

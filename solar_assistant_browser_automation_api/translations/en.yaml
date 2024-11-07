@@ -1,0 +1,16 @@
+---
+configuration:
+  url:
+    name: Url
+    description: >-
+      Full url of solar assistant, example https://xxx.eu.solar-assistant.io/
+  user:
+    name: Username
+    description: >-
+      Username
+  pass:
+    name: Password
+    description: >-
+      Password
+network:
+  8080/tcp: The webserver port

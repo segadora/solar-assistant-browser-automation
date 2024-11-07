@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -15,10 +16,11 @@ import (
 )
 
 type SolarAssistant struct {
-	url   string
-	user  string
-	pass  string
-	debug bool
+	url         string
+	user        string
+	pass        string
+	debug       bool
+	browserPath string
 }
 
 func main() {
@@ -26,11 +28,14 @@ func main() {
 		log.Printf("unable to load .env file: %s", err)
 	}
 
+	path, _ := launcher.LookPath()
+
 	solarAssistant := &SolarAssistant{
-		url:   os.Getenv("SOLAR_ASSISTANT_URL"),
-		user:  os.Getenv("SOLAR_ASSISTANT_USER"),
-		pass:  os.Getenv("SOLAR_ASSISTANT_PASS"),
-		debug: os.Getenv("SOLAR_ASSISTANT_DEBUG") == "1",
+		url:         os.Getenv("SOLAR_ASSISTANT_URL"),
+		user:        os.Getenv("SOLAR_ASSISTANT_USER"),
+		pass:        os.Getenv("SOLAR_ASSISTANT_PASS"),
+		debug:       os.Getenv("SOLAR_ASSISTANT_DEBUG") == "1",
+		browserPath: path,
 	}
 
 	r := gin.New()
@@ -105,7 +110,9 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 
 	log.Printf("go to power page at (%s)", solarAssistant.url+"/power")
 
-	browser := rod.New().MustConnect()
+	u := launcher.New().Bin(solarAssistant.browserPath).MustLaunch()
+
+	browser := rod.New().ControlURL(u).MustConnect()
 
 	defer browser.MustClose()
 

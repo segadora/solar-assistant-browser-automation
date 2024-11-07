@@ -26,6 +26,8 @@ RUN apk add chromium
 WORKDIR /
 COPY --from=builder /usr/bin/solar-assistant-browser-automation /
 
+EXPOSE 8080
+
 HEALTHCHECK --interval=5s --timeout=5s --start-period=10s --retries=3 CMD curl --fail http://localhost:1323/health || exit 1
 
 CMD ["/solar-assistant-browser-automation"]
