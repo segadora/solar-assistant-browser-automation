@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.10](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.9...v1.1.10) (2024-11-07)
+
+
+### Bug Fixes
+
+* fix automation can only run once ([0984699](https://github.com/segadora/solar-assistant-browser-automation/commit/0984699b980dab724d5fef1bcc98199b20f96a21))
+* fix redundant break statement ([b74004c](https://github.com/segadora/solar-assistant-browser-automation/commit/b74004cbab785d2085dc46eebf264e93940f4ae7))
+
+
+### Miscellaneous
+
+* add logging ([86a95d4](https://github.com/segadora/solar-assistant-browser-automation/commit/86a95d412a0d4fed3e6750ab56e82e80993d12b6))
+
 ## [1.1.9](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.1.8...v1.1.9) (2024-11-07)
 
 
