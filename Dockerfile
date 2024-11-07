@@ -1,21 +1,31 @@
-FROM golang:1.23-alpine AS build
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.23 AS builder
 
-WORKDIR /app
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
 
-COPY *.go ./
-COPY go.mod go.sum ./
+ENV CGO_ENABLED=0
+ENV GO111MODULE=on
 
-RUN go get -d -v ./...
+WORKDIR /go/src/github.com/segadora/solar-assistant-browser-automation
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o solar-assistant *.go
+COPY go.mod go.mod
+COPY go.sum go.sum
+RUN go mod download
 
-FROM alpine:3 AS executable
+COPY . .
 
-COPY --from=build  /app/solar-assistant /
+RUN CGO_ENABLED=${CGO_ENABLED} GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o /usr/bin/solar-assistant-browser-automation .
+
+FROM --platform=${BUILDPLATFORM:-linux/amd64} alpine:3
 
 RUN apk add curl
 RUN apk add chromium
 
+WORKDIR /
+COPY --from=builder /usr/bin/solar-assistant-browser-automation /
+
 HEALTHCHECK --interval=5s --timeout=5s --start-period=10s --retries=3 CMD curl --fail http://localhost:1323/health || exit 1
 
-ENTRYPOINT ["/solar-assistant"]
+CMD ["/solar-assistant-browser-automation"]
