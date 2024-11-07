@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.2.2](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.2.1...v1.2.2) (2024-11-07)
+
+
+### Bug Fixes
+
+* finalizing changes for home assistant ([1ababe7](https://github.com/segadora/solar-assistant-browser-automation/commit/1ababe7c935df325ac3bb4f6c536f73bcb69bc38))
+* fix endpoint can only be called once ([2434d89](https://github.com/segadora/solar-assistant-browser-automation/commit/2434d8947a4f71622392e9212051d3d14a366842))
+
+
+### Miscellaneous
+
+* add debug line ([4b39fd3](https://github.com/segadora/solar-assistant-browser-automation/commit/4b39fd3fed6cb969a6e1489fee33bcd3816387ba))
+* add debugging ([20ffb0c](https://github.com/segadora/solar-assistant-browser-automation/commit/20ffb0c84ee8eb6ad8c7660c9ab27a1f0ad45432))
+* attempt to reuse browser ([df4a4ad](https://github.com/segadora/solar-assistant-browser-automation/commit/df4a4adffc028ee8e1cd0cc1aa93ccf23e1a970a))
+* debugging code ([6d59842](https://github.com/segadora/solar-assistant-browser-automation/commit/6d5984264197a963595f23ee9da16f45ecd9340e))
+* remove debug code ([6439822](https://github.com/segadora/solar-assistant-browser-automation/commit/6439822e4546c1f8b9f21655ff6b3c393d3f1c51))
+
 ## [1.2.1](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.2.0...v1.2.1) (2024-11-07)
 
 
