@@ -1,0 +1,16 @@
+---
+configuration:
+  url:
+    name: Link
+    description: >-
+      Fuld adresse til solar assistant, eksempel https://xxx.eu.solar-assistant.io
+  user:
+    name: Brugernavn
+    description: >-
+      Brugernavn til Solar Assistant
+  pass:
+    name: Kodeord
+    description: >-
+      Kodeord til Solar Assistant
+network:
+  8080/tcp: Webserver port
