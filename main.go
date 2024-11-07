@@ -21,7 +21,6 @@ type SolarAssistant struct {
 	pass    string
 	debug   bool
 	browser *rod.Browser
-	page    *rod.Page
 }
 
 func main() {
@@ -43,7 +42,6 @@ func main() {
 		pass:    os.Getenv("SOLAR_ASSISTANT_PASS"),
 		debug:   os.Getenv("SOLAR_ASSISTANT_DEBUG") == "1",
 		browser: browser,
-		page:    nil,
 	}
 
 	r := gin.New()
@@ -118,14 +116,10 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 
 	log.Printf("go to power page at (%s)", solarAssistant.url+"/power")
 
-	if solarAssistant.page == nil {
-		solarAssistant.page = solarAssistant.browser.MustPage(solarAssistant.url + "/power").MustWaitStable()
-	} else {
-		solarAssistant.page = solarAssistant.page.MustNavigate(solarAssistant.url + "/power").MustWaitStable()
-	}
+	page := solarAssistant.browser.MustPage(solarAssistant.url + "/power").MustWaitStable()
+	defer page.MustClose()
 
-	page := solarAssistant.page
-	if page.MustElement(".heading").MustText() == "Sign in" {
+	if strings.Contains(page.MustInfo().URL, "/sign_in") {
 		log.Println("inputting login")
 
 		page.MustElement("input#user_email").MustInput(solarAssistant.user)
@@ -215,27 +209,15 @@ func (solarAssistant *SolarAssistant) updateWorkSchedule(page *rod.Page, m map[s
 		log.Printf("updating schedule %s", row)
 
 		if req.From != "" {
-			log.Println("updating from")
-
 			startEl := containerEl.MustElement("input#work_mode_slot_" + row + "_start")
 			startEl.MustInput("")
-			for _, c := range timeInput(req.From) {
-				log.Printf("inputting key: %s", c.Info().Key)
-
-				startEl.MustType(c)
-			}
+			startEl.MustType(timeInput(req.From)...)
 		}
 
 		if req.To != "" {
-			log.Println("updating to")
-
 			endEl := containerEl.MustElement("input#work_mode_slot_" + row + "_end")
 			endEl.MustInput("")
-			for _, c := range timeInput(req.To) {
-				log.Printf("inputting key: %s", c.Info().Key)
-
-				endEl.MustType(c)
-			}
+			endEl.MustType(timeInput(req.To)...)
 		}
 
 		if req.Priority != "" {
@@ -249,8 +231,6 @@ func (solarAssistant *SolarAssistant) updateWorkSchedule(page *rod.Page, m map[s
 				el.MustClick().MustWaitStable()
 			}
 		}
-
-		log.Printf("updated schedule %s", row)
 	}
 
 	containerEl.MustElement("button[type=submit]").MustClick().MustWaitStable()
