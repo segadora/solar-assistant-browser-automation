@@ -3,7 +3,7 @@ configuration:
   url:
     name: Url
     description: >-
-      Full url of solar assistant, example https://xxx.eu.solar-assistant.io/
+      Full url of solar assistant, example https://xxx.eu.solar-assistant.io
   user:
     name: Username
     description: >-

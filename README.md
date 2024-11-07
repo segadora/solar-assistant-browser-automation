@@ -25,7 +25,7 @@ services:
     container_name: "solar-assistant-browser-automation"
     restart: on-failure
     environment:
-      SOLAR_ASSISTANT_URL: "https://xxx.eu.solar-assistant.io/"
+      SOLAR_ASSISTANT_URL: "https://xxx.eu.solar-assistant.io"
       SOLAR_ASSISTANT_USER: "xxx"
       SOLAR_ASSISTANT_PASS: "xxx"
     ports:
