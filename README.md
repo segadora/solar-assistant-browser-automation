@@ -29,5 +29,5 @@ services:
       SOLAR_ASSISTANT_USER: "xxx"
       SOLAR_ASSISTANT_PASS: "xxx"
     ports:
-      - 8080:8080
+      - "8080:8080"
 ```

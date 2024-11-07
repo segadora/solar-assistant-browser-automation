@@ -16,11 +16,11 @@ import (
 )
 
 type SolarAssistant struct {
-	url     string
-	user    string
-	pass    string
-	debug   bool
-	browser *rod.Browser
+	url         string
+	user        string
+	pass        string
+	debug       bool
+	browserPath string
 }
 
 func main() {
@@ -32,14 +32,12 @@ func main() {
 	u := launcher.New().Bin(path).MustLaunch()
 
 	solarAssistant := &SolarAssistant{
-		url:     os.Getenv("SOLAR_ASSISTANT_URL"),
-		user:    os.Getenv("SOLAR_ASSISTANT_USER"),
-		pass:    os.Getenv("SOLAR_ASSISTANT_PASS"),
-		debug:   os.Getenv("SOLAR_ASSISTANT_DEBUG") == "1",
-		browser: rod.New().ControlURL(u).MustConnect(),
+		url:         os.Getenv("SOLAR_ASSISTANT_URL"),
+		user:        os.Getenv("SOLAR_ASSISTANT_USER"),
+		pass:        os.Getenv("SOLAR_ASSISTANT_PASS"),
+		debug:       os.Getenv("SOLAR_ASSISTANT_DEBUG") == "1",
+		browserPath: u,
 	}
-
-	defer solarAssistant.browser.MustClose()
 
 	r := gin.New()
 	r.Use(
@@ -100,6 +98,8 @@ type UpdateScheduleRequest struct {
 }
 
 func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
+	log.Println("receiving request to update schedule")
+
 	var request UpdateScheduleRequest
 	if err := c.BindQuery(&request); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -109,7 +109,16 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 		return
 	}
 
-	page := solarAssistant.browser.MustPage(solarAssistant.url + "/power").MustWaitStable()
+	log.Println("go to power page")
+
+	browser := rod.New().ControlURL(solarAssistant.browserPath).MustConnect()
+
+	defer browser.MustClose()
+
+	page := browser.MustPage(solarAssistant.url + "/power")
+
+	page.MustScreenshot("test.png")
+	page.MustWaitStable()
 
 	if page.MustElement(".heading").MustText() == "Sign in" {
 		log.Println("inputting login")
@@ -123,11 +132,21 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 		page.MustNavigate(solarAssistant.url + "/power").MustWaitStable()
 	}
 
+	log.Println("generating map of schedules")
+
 	m := make(map[string]WorkModeScheduleUpdate)
-	m["1"] = WorkModeScheduleUpdate{From: request.Schedule1.From, To: request.Schedule1.To, Priority: request.Schedule1.Priority, Enabled: request.Schedule1.Enabled}
-	m["2"] = WorkModeScheduleUpdate{From: request.Schedule2.From, To: request.Schedule2.To, Priority: request.Schedule2.Priority, Enabled: request.Schedule2.Enabled}
-	m["3"] = WorkModeScheduleUpdate{From: request.Schedule3.From, To: request.Schedule3.To, Priority: request.Schedule3.Priority, Enabled: request.Schedule3.Enabled}
-	m["4"] = WorkModeScheduleUpdate{From: request.Schedule4.From, To: request.Schedule4.To, Priority: request.Schedule4.Priority, Enabled: request.Schedule4.Enabled}
+	if request.Schedule1.From != "" || request.Schedule1.To != "" || request.Schedule1.Priority != "" || request.Schedule1.Enabled != 0 {
+		m["1"] = WorkModeScheduleUpdate{From: request.Schedule1.From, To: request.Schedule1.To, Priority: request.Schedule1.Priority, Enabled: request.Schedule1.Enabled}
+	}
+	if request.Schedule2.From != "" || request.Schedule2.To != "" || request.Schedule2.Priority != "" || request.Schedule2.Enabled != 0 {
+		m["2"] = WorkModeScheduleUpdate{From: request.Schedule2.From, To: request.Schedule2.To, Priority: request.Schedule2.Priority, Enabled: request.Schedule2.Enabled}
+	}
+	if request.Schedule3.From != "" || request.Schedule3.To != "" || request.Schedule3.Priority != "" || request.Schedule3.Enabled != 0 {
+		m["3"] = WorkModeScheduleUpdate{From: request.Schedule3.From, To: request.Schedule3.To, Priority: request.Schedule3.Priority, Enabled: request.Schedule3.Enabled}
+	}
+	if request.Schedule4.From != "" || request.Schedule4.To != "" || request.Schedule4.Priority != "" || request.Schedule4.Enabled != 0 {
+		m["4"] = WorkModeScheduleUpdate{From: request.Schedule4.From, To: request.Schedule4.To, Priority: request.Schedule4.Priority, Enabled: request.Schedule4.Enabled}
+	}
 
 	if !solarAssistant.updateWorkSchedule(page, m) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, solarAssistant.response(gin.H{
@@ -136,6 +155,8 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 		}, page))
 		return
 	}
+
+	log.Printf("waiting to see if form is correctly updated")
 
 	// workaround due to bug, possibly in ui
 	time.Sleep(10 * time.Second)
@@ -167,6 +188,8 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 		}
 	}
 
+	time.Sleep(10 * time.Second)
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 	})
@@ -179,18 +202,35 @@ func (solarAssistant *SolarAssistant) updateWorkSchedule(page *rod.Page, m map[s
 		return false
 	}
 
+	log.Println("pressing edit schedule")
+
 	page.MustElement("a[phx-click=\"edit_schedule\"]").MustClick().MustWaitStable()
 
-	for i := 1; i <= 4; i++ {
-		row := strconv.Itoa(i)
-		req := m[row]
+	for row, req := range m {
+		log.Printf("updating schedule %s", row)
 
 		if req.From != "" {
-			containerEl.MustElement("input#work_mode_slot_" + row + "_start").MustInput("").MustType(timeInput(req.From))
+			log.Println("updating from")
+
+			startEl := containerEl.MustElement("input#work_mode_slot_" + row + "_start")
+			startEl.MustInput("")
+			for _, c := range timeInput(req.From) {
+				log.Printf("inputting key: %s", c.Info().Key)
+
+				startEl.MustType(c)
+			}
 		}
 
 		if req.To != "" {
-			containerEl.MustElement("input#work_mode_slot_" + row + "_end").MustInput("").MustType(timeInput(req.To))
+			log.Println("updating to")
+
+			endEl := containerEl.MustElement("input#work_mode_slot_" + row + "_end")
+			endEl.MustInput("")
+			for _, c := range timeInput(req.To) {
+				log.Printf("inputting key: %s", c.Info().Key)
+
+				endEl.MustType(c)
+			}
 		}
 
 		if req.Priority != "" {
@@ -204,6 +244,8 @@ func (solarAssistant *SolarAssistant) updateWorkSchedule(page *rod.Page, m map[s
 				el.MustClick().MustWaitStable()
 			}
 		}
+
+		log.Printf("updated schedule %s", row)
 	}
 
 	containerEl.MustElement("button[type=submit]").MustClick().MustWaitStable()
@@ -219,57 +261,43 @@ func (solarAssistant *SolarAssistant) response(response gin.H, page *rod.Page) g
 	return response
 }
 
-func timeInput(time string) (input.Key, input.Key, input.Key, input.Key) {
-	switch time {
-	case "00":
-		return input.Digit0, input.Digit0, input.Digit0, input.Digit0
-	case "01":
-		return input.Digit0, input.Digit1, input.Digit0, input.Digit0
-	case "02":
-		return input.Digit0, input.Digit2, input.Digit0, input.Digit0
-	case "03":
-		return input.Digit0, input.Digit3, input.Digit0, input.Digit0
-	case "04":
-		return input.Digit0, input.Digit4, input.Digit0, input.Digit0
-	case "05":
-		return input.Digit0, input.Digit5, input.Digit0, input.Digit0
-	case "06":
-		return input.Digit0, input.Digit6, input.Digit0, input.Digit0
-	case "07":
-		return input.Digit0, input.Digit7, input.Digit0, input.Digit0
-	case "08":
-		return input.Digit0, input.Digit8, input.Digit0, input.Digit0
-	case "09":
-		return input.Digit0, input.Digit9, input.Digit0, input.Digit0
-	case "10":
-		return input.Digit1, input.Digit0, input.Digit0, input.Digit0
-	case "11":
-		return input.Digit1, input.Digit1, input.Digit0, input.Digit0
-	case "12":
-		return input.Digit1, input.Digit2, input.Digit0, input.Digit0
-	case "13":
-		return input.Digit1, input.Digit3, input.Digit0, input.Digit0
-	case "14":
-		return input.Digit1, input.Digit4, input.Digit0, input.Digit0
-	case "15":
-		return input.Digit1, input.Digit5, input.Digit0, input.Digit0
-	case "16":
-		return input.Digit1, input.Digit6, input.Digit0, input.Digit0
-	case "17":
-		return input.Digit1, input.Digit7, input.Digit0, input.Digit0
-	case "18":
-		return input.Digit1, input.Digit8, input.Digit0, input.Digit0
-	case "19":
-		return input.Digit1, input.Digit9, input.Digit0, input.Digit0
-	case "20":
-		return input.Digit2, input.Digit0, input.Digit0, input.Digit0
-	case "21":
-		return input.Digit2, input.Digit1, input.Digit0, input.Digit0
-	case "22":
-		return input.Digit2, input.Digit2, input.Digit0, input.Digit0
-	case "23":
-		return input.Digit2, input.Digit3, input.Digit0, input.Digit0
+func timeInput(time string) []input.Key {
+	keys := make([]input.Key, 0)
+
+	for _, char := range time {
+		switch string(char) {
+		case "0":
+			keys = append(keys, input.Digit0)
+			break
+		case "1":
+			keys = append(keys, input.Digit1)
+			break
+		case "2":
+			keys = append(keys, input.Digit2)
+			break
+		case "3":
+			keys = append(keys, input.Digit3)
+			break
+		case "4":
+			keys = append(keys, input.Digit4)
+			break
+		case "5":
+			keys = append(keys, input.Digit5)
+			break
+		case "6":
+			keys = append(keys, input.Digit6)
+			break
+		case "7":
+			keys = append(keys, input.Digit7)
+			break
+		case "8":
+			keys = append(keys, input.Digit8)
+			break
+		case "9":
+			keys = append(keys, input.Digit9)
+			break
+		}
 	}
 
-	return input.Digit0, input.Digit0, input.Digit0, input.Digit0
+	return keys
 }

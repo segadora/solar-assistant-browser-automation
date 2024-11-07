@@ -1,0 +1,14 @@
+services:
+  solar-assistant-browser-automation:
+    build:
+      dockerfile: Dockerfile
+      args:
+        TARGETPLATFORM: linux/amd64
+        BUILDPLATFORM: linux/amd64
+        TARGETOS: linux
+        TARGETARCH: amd64
+    container_name: "solar-assistant-browser-automation"
+    restart: on-failure
+    env_file: .env
+    ports:
+      - "8080:8080"
