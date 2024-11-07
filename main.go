@@ -16,11 +16,10 @@ import (
 )
 
 type SolarAssistant struct {
-	url         string
-	user        string
-	pass        string
-	debug       bool
-	browserPath string
+	url   string
+	user  string
+	pass  string
+	debug bool
 }
 
 func main() {
@@ -28,14 +27,11 @@ func main() {
 		log.Printf("unable to load .env file: %s", err)
 	}
 
-	path, _ := launcher.LookPath()
-
 	solarAssistant := &SolarAssistant{
-		url:         os.Getenv("SOLAR_ASSISTANT_URL"),
-		user:        os.Getenv("SOLAR_ASSISTANT_USER"),
-		pass:        os.Getenv("SOLAR_ASSISTANT_PASS"),
-		debug:       os.Getenv("SOLAR_ASSISTANT_DEBUG") == "1",
-		browserPath: path,
+		url:   os.Getenv("SOLAR_ASSISTANT_URL"),
+		user:  os.Getenv("SOLAR_ASSISTANT_USER"),
+		pass:  os.Getenv("SOLAR_ASSISTANT_PASS"),
+		debug: os.Getenv("SOLAR_ASSISTANT_DEBUG") == "1",
 	}
 
 	r := gin.New()
@@ -110,8 +106,8 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 
 	log.Printf("go to power page at (%s)", solarAssistant.url+"/power")
 
-	u := launcher.New().Bin(solarAssistant.browserPath).MustLaunch()
-
+	path, _ := launcher.LookPath()
+	u := launcher.New().Bin(path).MustLaunch()
 	browser := rod.New().ControlURL(u).MustConnect()
 
 	defer browser.MustClose()

@@ -9,6 +9,7 @@ services:
         TARGETARCH: amd64
     container_name: "solar-assistant-browser-automation"
     restart: on-failure
-    env_file: .env
+    volumes:
+      - ./.env:/.env
     ports:
       - "8080:8080"
