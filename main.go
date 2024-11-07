@@ -107,6 +107,9 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 	log.Printf("go to power page at (%s)", solarAssistant.url+"/power")
 
 	path, _ := launcher.LookPath()
+
+	log.Printf("browser path: %s", path)
+
 	u := launcher.New().Bin(path).MustLaunch()
 	browser := rod.New().ControlURL(u).MustConnect()
 
