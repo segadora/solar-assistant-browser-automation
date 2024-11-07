@@ -5,6 +5,7 @@ FROM --platform=${BUILD_ARCH:-linux/amd64} golang:1.23 AS builder
 
 WORKDIR /go/src/github.com/segadora/solar-assistant-browser-automation
 
+RUN echo v1.0.0
 RUN git clone https://github.com/segadora/solar-assistant-browser-automation.git .
 
 COPY . .
