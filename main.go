@@ -158,7 +158,7 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 	log.Printf("waiting to see if form is correctly updated")
 
 	// workaround due to bug, possibly in ui
-	time.Sleep(10 * time.Second)
+	time.Sleep(30 * time.Second)
 
 	needUpdate := false
 	for i := 1; i <= 4; i++ {
@@ -187,7 +187,11 @@ func (solarAssistant *SolarAssistant) updateWorkModeSchedule(c *gin.Context) {
 		}
 	}
 
-	time.Sleep(10 * time.Second)
+	log.Printf("waiting for apis to finish")
+
+	time.Sleep(30 * time.Second)
+
+	log.Printf("all should be complete")
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
@@ -234,6 +238,8 @@ func (solarAssistant *SolarAssistant) updateWorkSchedule(page *rod.Page, m map[s
 	}
 
 	containerEl.MustElement("button[type=submit]").MustClick().MustWaitStable()
+
+	page.MustScreenshot("test.png")
 
 	return true
 }

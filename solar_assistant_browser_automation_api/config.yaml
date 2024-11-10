@@ -2,7 +2,7 @@
 name: "Solar Assistant Browser Automation Api"
 description: "Interacts with solar assistant"
 url: https://github.com/segadora/solar-assistant-browser-automation
-version: "1.0.0"
+version: "1.0.1"
 slug: "solar_assistant_browser_automation_api"
 init: false
 arch:
