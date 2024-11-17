@@ -2,6 +2,10 @@
 
 [![Actions Status](https://github.com/segadora/solar-assistant-browser-automation/workflows/CI/badge.svg)](https://github.com/segadora/solar-assistant-browser-automation/actions?query=workflow%3ACI)
 
+## Notice
+
+I realized solar assistant has price rank, which solves my issue, so this prject is not relevant for my case anymore.
+
 ## Description
 
 This go projects emulates a chrome browser and updates the work mode schedule.
