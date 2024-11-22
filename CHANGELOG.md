@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.2.2...v1.2.3) (2024-11-10)
+
+
+### Miscellaneous
+
+* increase timeout and add more debugging ([1f45610](https://github.com/segadora/solar-assistant-browser-automation/commit/1f456107e87d7188f1eaa246b42ad0294ab6680d))
+
 ## [1.2.2](https://github.com/segadora/solar-assistant-browser-automation/compare/v1.2.1...v1.2.2) (2024-11-07)
 
 
